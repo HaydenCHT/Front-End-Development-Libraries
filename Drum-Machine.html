@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>CodePen - random-quote</title>
+  <style>
+    .drum-pad {
+      width: 50px;
+      height: 50px;
+    }
+  </style>
+
+</head>
+<body>
+
+  <div id="drum-machine"></div>
+
+  <script>
+    import React from "https://esm.sh/react";
+    import ReactDOM from "https://esm.sh/react-dom";
+
+    const customAudDatabase = [
+      ["Heater 1", "https://cdn.freecodecamp.org/testable-projects-fcc/audio/Heater-1.mp3", "Q"],
+      ["Heater 2", "https://cdn.freecodecamp.org/testable-projects-fcc/audio/Heater-2.mp3", "W"],
+      ["Heater 3", "https://cdn.freecodecamp.org/testable-projects-fcc/audio/Heater-3.mp3", "E"],
+      ["Heater 4", "https://cdn.freecodecamp.org/testable-projects-fcc/audio/Heater-4_1.mp3", "A"],
+      ["Clap", "https://cdn.freecodecamp.org/testable-projects-fcc/audio/Heater-6.mp3", "S"],
+      ["Open-HH", "https://cdn.freecodecamp.org/testable-projects-fcc/audio/Dsc_Oh.mp3", "D"],
+      ["Kick-n'-Hat", "https://cdn.freecodecamp.org/testable-projects-fcc/audio/Kick_n_Hat.mp3", "Z"],
+      ["Kick", "https://cdn.freecodecamp.org/testable-projects-fcc/audio/RP4_KICK_1.mp3", "X"],
+      ["Closed-HH", "https://cdn.freecodecamp.org/testable-projects-fcc/audio/Cev_H2.mp3", "C"]
+    ];
+
+    const drumMachine = ReactDOM.createRoot(document.getElementById('drum-machine'));
+
+    const DrumPadAudio = (props) => {
+      switch(props.type){
+        case "Q":
+          return (<audio class="clip" id="Q" src={customAudDatabase[0][1]} />);
+        case "W":
+          return (<audio class="clip" id="W" src={customAudDatabase[1][1]} />);
+        case "E":
+          return (<audio class="clip" id="E" src={customAudDatabase[2][1]} />);
+        case "A":
+          return (<audio class="clip" id="A" src={customAudDatabase[3][1]} />);
+        case "S":
+          return (<audio class="clip" id="S" src={customAudDatabase[4][1]} />);
+        case "D":
+          return (<audio class="clip" id="D" src={customAudDatabase[5][1]} />);
+        case "Z":
+          return (<audio class="clip" id="Z" src={customAudDatabase[6][1]} />);
+        case "X":
+          return (<audio class="clip" id="X" src={customAudDatabase[7][1]} />);
+        case "C":
+          return (<audio class="clip" id="C" src={customAudDatabase[8][1]} />);
+        default:
+          return (<div></div>);
+      }
+    }
+
+    const playAudio = () => {
+      const matchingArray = customAudDatabase.find(innerArray => innerArray[0] === event.target.id);
+      const audioElement = document.getElementById(matchingArray[2]);
+      audioElement.play();
+    }
+
+    const handleChange = () => {
+      playAudio();
+      document.getElementById("display").innerHTML = event.target.id;
+    }
+
+    const DrumPad = (props) => {
+      let targetAudio = "";
+      switch(props.type){
+        case "Q":
+          targetAudio = customAudDatabase[0][0];
+          break;
+        case "W":
+          targetAudio = customAudDatabase[1][0];
+          break;
+        case "E":
+          targetAudio = customAudDatabase[2][0];
+          break;
+        case "A":
+          targetAudio = customAudDatabase[3][0];
+          break;
+        case "S":
+          targetAudio = customAudDatabase[4][0];
+          break;
+        case "D":
+          targetAudio = customAudDatabase[5][0];
+          break;
+        case "Z":
+          targetAudio = customAudDatabase[6][0];
+          break;
+        case "X":
+          targetAudio = customAudDatabase[7][0];
+          break;
+        case "C":
+          targetAudio = customAudDatabase[8][0];
+          break;
+        default:
+          break;
+      }
+      return (
+        <button class="drum-pad" id={targetAudio} onClick={handleChange}>
+          {props.type}
+          <DrumPadAudio type={props.type} />
+        </button>
+      )
+    }
+
+    class Machine extends React.Component {
+      constructor(props) {
+        super(props);
+      }
+
+      render() {
+        return (
+          <div>
+            <div id="display"></div>
+            <DrumPad type="Q" />
+            <DrumPad type="W" />
+            <DrumPad type="E" />
+            <DrumPad type="A" />
+            <DrumPad type="S" />
+            <DrumPad type="D" />
+            <DrumPad type="Z" />
+            <DrumPad type="X" />
+            <DrumPad type="C" />
+          </div>
+        );
+      }
+    };
+
+    document.addEventListener("keydown", event => {
+      switch(event.key) {
+        case "Q"||"q":
+          document.getElementById(customAudDatabase[0][0]).click();
+          break;
+        case "W"||"w":
+          document.getElementById(customAudDatabase[1][0]).click();
+          break;
+        case "E"||"e":
+          document.getElementById(customAudDatabase[2][0]).click();
+          break;
+        case "A"||"a":
+          document.getElementById(customAudDatabase[3][0]).click();
+          break;
+        case "S"||"s":
+          document.getElementById(customAudDatabase[4][0]).click();
+          break;
+        case "D"||"d":
+          document.getElementById(customAudDatabase[5][0]).click();
+          break;
+        case "Z"||"z":
+          document.getElementById(customAudDatabase[6][0]).click();
+          break;
+        case "X"||"x":
+          document.getElementById(customAudDatabase[7][0]).click();
+          break;
+        case "C"||"c":
+          document.getElementById(customAudDatabase[8][0]).click();
+          break;
+      }
+    }
+  )
+
+    drumMachine.render(
+      <Machine />
+    );
+  </script>
+</body>
+</html>
