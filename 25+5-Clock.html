@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>CodePen - random-quote</title>
+  <style>
+    h1 {
+      text-align: center;
+    }
+
+    .label, .custom-time {
+      display: flex;
+      justify-content: center;
+    }
+
+    .label h3, .custom-time .button-category {
+      margin-left: 25px;
+      margin-right: 25px;
+    }
+
+    .button-category {
+      display: flex;
+    }
+
+    .elements {
+      margin-left: 5px;
+      margin-right: 5px;
+    }
+
+    .timer {
+      text-align: center;
+      border: 1px solid black;
+    }
+  </style>
+
+</head>
+<body>
+
+  <div id="container"></div>
+
+  <script>
+    import React from "https://esm.sh/react";
+    import ReactDOM from "https://esm.sh/react-dom";
+
+    const Timer = (props) => {
+      const [time, setTime] = useState({ minutes: props.session, seconds: 0, lastMinute: false, timerElement: `${String(props.session).padStart(2, '0')}:00` });
+      const [isActive, setIsActive] = useState(false);
+      const [stage, setStage] = useState("Session");
+      const [intervalId, setIntervalId] = useState(null);
+      
+      useEffect(() => {
+        changeTimer();
+      }, [props.session, props.break, props.reset]);
+      
+      const startTimer = () => {
+        const id = setInterval(() => {
+          setTime(prevTime => {
+            let { minutes, seconds, lastMinute } = prevTime;
+              
+            if(lastMinute && seconds === 0){
+              changeSection();
+              document.getElementById("beep").play();
+            }
+            
+            if(seconds!=0){
+              seconds--;
+            } else if(!lastMinute) {
+              seconds = 59;
+            }
+              
+            if(seconds===59){
+              minutes--;
+              if(minutes === 0){
+                lastMinute = true;
+              }
+            }
+              
+            const displayMinutes = String(minutes).padStart(2, '0');
+            const displaySeconds = String(seconds).padStart(2, '0');
+            
+            return { minutes, seconds, lastMinute, timerElement: `${displayMinutes}:${displaySeconds}` };
+          });
+        }, 1000);
+        setIntervalId(id);
+      };
+      
+      const changeSection = () => {
+        if(document.getElementById("timer-label").innerText=="Session") { 
+          setStage("Break");
+          setTime({ minutes: props.break, seconds: 0, lastMinute: false, timerElement: `${String(props.break).padStart(2, '0')}:00` });
+        } else {
+          setStage("Session");
+          setTime({ minutes: props.session, seconds: 0, lastMinute: false, timerElement: `${String(props.session).padStart(2, '0')}:00` });
+        }
+      }
+      
+      const toggleTimer = () => {
+        setIsActive(!isActive);
+        
+        if(!isActive) {
+          startTimer();
+        } else {
+          clearInterval(intervalId);
+        }
+      }
+      
+      const changeTimer = () => {
+        setIsActive(false);
+        clearInterval(intervalId);
+        setTime({ minutes: props.session, seconds: 0, lastMinute: false, timerElement: `${String(props.session).padStart(2, '0')}:00` });
+        setStage("Session");
+      }
+      
+      return (
+        <div id="timer-dynamic">
+          <h3 id="timer-label">{stage}</h3>
+          <h3 id="time-left">{time.timerElement}</h3>
+          <button id="start_stop" onClick={toggleTimer}>Start/Stop</button>
+          <audio id="beep" src="https://cdn.freecodecamp.org/testable-projects-fcc/audio/BeepSound.wav"/>
+        </div>
+      );
+    }
+
+    class Clock extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = {
+          break: 5,
+          session: 25,
+          reset: false
+        };
+        this.resetTimer = this.resetTimer.bind(this);
+        this.breakMore = this.breakMore.bind(this);
+        this.breakLess = this.breakLess.bind(this);
+        this.sessionMore = this.sessionMore.bind(this);
+        this.sessionLess = this.sessionLess.bind(this);
+      }
+      
+      resetTimer() {
+        this.setState({
+          break: 5,
+          session: 25,
+          reset: !this.state.reset
+        });
+        document.getElementById("beep").load();
+      }
+      
+      breakMore() {
+        this.setState({
+          break: Math.min(this.state.break+1, 60)
+        });
+      }
+      
+      breakLess() {
+        this.setState({
+          break: Math.max(this.state.break-1, 1)
+        });
+      }
+      
+      sessionMore() {
+        this.setState({
+          session: Math.min(this.state.session+1, 60)
+        });
+      }
+      
+      sessionLess() {
+        this.setState({
+          session: Math.max(this.state.session-1, 1)
+        });
+      }
+      
+      render() {
+        
+        return (
+          <div id="clock">
+            <h1>25 + 5 Clock</h1>
+            <div class="label">
+              <h3 id="break-label">Break Length</h3>
+              <h3 id="session-label">Session Length</h3>
+            </div>
+            <div class="custom-time">
+              <div class="button-category">
+                <button class="elements" id="break-decrement" onClick={this.breakLess}>Less</button>
+                <p class="elements" id="break-length">{this.state.break}</p>
+                <button class="elements" id="break-increment" onClick={this.breakMore}>More</button>
+              </div>
+              <div class="button-category">
+                <button class="elements" id="session-decrement" onClick={this.sessionLess}>Less</button>
+                <p class="elements" id="session-length">{this.state.session}</p>
+                <button class="elements" id="session-increment" onClick={this.sessionMore}>More</button>
+              </div>
+            </div>
+            <div class="timer">
+              <Timer session={this.state.session} break={this.state.break} reset={this.state.reset}/>
+              <button id="reset" onClick={this.resetTimer}>Reset</button>
+            </div>
+          </div>
+        );
+      }
+    };
+
+    ReactDOM.render(<Clock />, document.getElementById('container'));
+  </script>
+</body>
+</html>
