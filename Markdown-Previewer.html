@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>CodePen - random-quote</title>
+  <style>
+    #container {
+      display: block;
+      margin-right: auto;
+      margin-left: auto;
+      width: 40%;
+    }
+  </style>
+
+</head>
+<body>
+
+  <div id="container"></div>
+
+  <script>
+    import React from "https://esm.sh/react";
+    import ReactDOM from "https://esm.sh/react-dom";
+
+    const container = ReactDOM.createRoot(document.getElementById('container'));
+
+
+    class Previewer extends React.Component {
+      constructor(props) {
+        super(props);
+        this.handleChange = this.handleChange.bind(this);
+      }
+  
+      handleChange() {
+        preview.innerHTML = marked.parse(event.target.value);
+      }
+
+      render() {
+        return (
+          <div>
+            <textarea id="editor" 
+              onChange={this.handleChange}></textarea>
+            <div id="preview"></div>
+          </div>
+        );
+      }
+    };
+
+    window.onload = function() {
+      const markDown = `
+        # Welcome to my React Markdown Previewer!
+
+        ## This is a sub-heading...
+        ### And here's some other cool stuff:
+
+        Heres some code, \`<div></div>\`, between 2 backticks.
+
+        \`\`\`
+        // this is multi-line code:
+        sample line 1
+        sample line 2
+        sample line 3
+
+        \`\`\`
+
+        You can also make text **bold**... whoa!
+        Or _italic_.
+        Or... wait for it... **_both!_**
+        And feel free to go crazy ~~crossing stuff out~~.
+
+        There's also [links](https://www.freecodecamp.org), and
+        > Block Quotes!
+
+        - And of course there are lists.
+          - Some are bulleted.
+            - With different indentation levels.
+                - That look like this.
+        
+        ![freeCodeCamp Logo](https://cdn.freecodecamp.org/testable-projects-fcc/images/fcc_secondary.svg)
+      `;
+      document.getElementById("editor").innerHTML = markDown;
+      document.getElementById("preview").innerHTML = marked.parse(markDown);
+    };
+
+    container.render(
+      <Previewer />
+    );
+  </script>
+</body>
+</html>
