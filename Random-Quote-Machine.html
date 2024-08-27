@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>CodePen - random-quote</title>
+  <style>
+    #quote-box {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      width: 40%;
+    }
+  </style>
+
+</head>
+<body>
+
+  <div id="quote-box"></div>
+
+  <script>
+    import React from "https://esm.sh/react";
+    import ReactDOM from "https://esm.sh/react-dom";
+
+    const dataBase = [
+      ["a-quote", "a-author"],
+      ["b-quote", "b-author"],
+      ["c-quote", "c-author"],
+      ["d-quote", "d-author"],
+      ["e-quote", "e-author"]];
+
+
+    const quoteBox = ReactDOM.createRoot(document.getElementById('quote-box'));
+
+    const randomPair = () => {
+      return Math.floor(Math.random() *  5);
+    };
+
+    const Text = rand => {
+      return /*#__PURE__*/(React.createElement("h3", { id: "text" }, dataBase[rand.idx][0]));
+    };
+
+    const Author = rand => {
+      return /*#__PURE__*/(React.createElement("h4", { id: "author" }, dataBase[rand.idx][1]));
+    };
+
+    const TweetQuote = () => {
+      return /*#__PURE__*/(React.createElement("a", { id: "tweet-quote", href: "twitter.com/intent/tweet", target: "_blank" }, "Tweet Quote"));
+    };
+
+    class QuoteBox extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = {
+          index: randomPair() };
+
+        this.shuffle = this.shuffle.bind(this);
+      }
+
+      shuffle() {
+        this.setState({
+          index: randomPair() });
+      }
+
+      render() {
+        return /*#__PURE__*/(
+          React.createElement("div", null, /*#__PURE__*/
+          React.createElement(Text, { idx: this.state.index }), /*#__PURE__*/
+          React.createElement(Author, { idx: this.state.index }), /*#__PURE__*/
+          React.createElement("button", { id: "new-quote", onClick: this.shuffle }, "New Quote"), /*#__PURE__*/
+          React.createElement(TweetQuote, null)));
+      }
+    };
+
+    quoteBox.render( /*#__PURE__*/
+    React.createElement(QuoteBox, null));
+  </script>
+</body>
+</html>
